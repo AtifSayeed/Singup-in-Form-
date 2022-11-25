@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
+import { store } from "./App";
+import { Navigate } from "react-router-dom";
 
-const Register = () => {
+const Login = () => {
+  const [token, setToken] = useContext(store);
   const [data, setData] = useState({
     username: "",
     email: "",
@@ -14,21 +17,17 @@ const Register = () => {
   const submitHandler = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3000/register", data)
-      .then((res) => alert(res.data));
+      .post("http://localhost:3000/login", data)
+      .then((res) => setToken(res.data.token));
   };
+  if(token){
+    return <Navigate to='./Profile'/>
+  }
   return (
     <div>
       <center>
         <form onSubmit={submitHandler}>
-          <h3>Register</h3>
-          <input
-            type="text"
-            onChange={changeHandler}
-            name="username"
-            placeholder="User Name"
-          />
-          <br />
+          <h3>Login</h3>
           <input
             type="email"
             onChange={changeHandler}
@@ -43,13 +42,6 @@ const Register = () => {
             placeholder="Password"
           />
           <br />
-          <input
-            type="password"
-            onChange={changeHandler}
-            name="confirmPassword"
-            placeholder="Confirm Password"
-          />
-          <br />
           <input type="submit" value="Register" />
           <br />
         </form>
@@ -58,4 +50,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;
